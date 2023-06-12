@@ -1,4 +1,5 @@
 from flask import Flask, request
+import time
 import os
 import telebot
 from helper.mega_acc import m
@@ -27,8 +28,24 @@ def handle_start(message):
 def handle_download(message):
     link = message.text
     try:
-        m.download_url(link)
-        bot.reply_to(message, "downloaded")
+        bot.reply_to(message, "Downloading...")
+        start_time = time.time()  # Capture start time
+
+        file = m.download_url(link)
+
+        end_time = time.time()  # Capture end time
+        download_time = round(end_time - start_time, 2)  # Calculate download time
+
+        file_size = m.get_size(file)  # Get file size in bytes
+        file_size_mb = round(file_size / (1024 * 1024), 2)  # Convert file size to MB
+
+        download_speed = round(file_size_mb / download_time, 2)  # Calculate download speed in MB/s
+
+        bot.reply_to(message, f"Download completed in {download_time} seconds")
+        bot.reply_to(message, f"File size: {file_size_mb} MB")
+        bot.reply_to(message, f"Download speed: {download_speed} MB/s")
+        bot.reply_to(message, f"Downloaded file: {file}")
     except Exception as e:
-        bot.reply_to(message, f"Could not download == {e}" )
-    
+        bot.reply_to(message, f"Could not download: {e}")
+
+bot.polling()
