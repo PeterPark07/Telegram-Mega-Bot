@@ -6,7 +6,6 @@ from helper.mega_acc import m
 
 app = Flask(__name__)
 bot = telebot.TeleBot(os.getenv('mega_bot'), threaded=False)
-bot.set_webhook(url = os.getenv('url'))
 
 # Bot route to handle incoming messages
 @app.route('/', methods=['POST'])
