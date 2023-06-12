@@ -29,6 +29,7 @@ def handle_start(message):
 @bot.message_handler(func=lambda message: True)
 def handle_download(message):
     link = message.text
+    return 5
     try:
         bot.reply_to(message, "Downloading...")
         os.chdir(download_path)
