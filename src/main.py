@@ -50,4 +50,4 @@ def handle_download(message):
 
         bot.reply_to(message, f"File Downloaded.\nTime taken : {download_time} seconds.\nDownload speed: {download_speed} MB/s.\n")
     except Exception as e:
-        bot.reply_to(message, f"Could not download: {e}")
+        bot.reply_to(message, f"Error Occured.\n\n{e}")
