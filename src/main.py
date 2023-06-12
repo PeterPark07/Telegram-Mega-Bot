@@ -47,5 +47,3 @@ def handle_download(message):
         bot.reply_to(message, f"Downloaded file: {file}")
     except Exception as e:
         bot.reply_to(message, f"Could not download: {e}")
-
-bot.polling()
