@@ -50,14 +50,11 @@ def handle_download(message):
         for file_path, file_size in file_sizes:
             file_size_mb = round(file_size / (1024 * 1024), 2)
             # Send file path and size to the user
-            file_list += f"File: {file_path}, Size: {file_size_mb} MB\n"
+            file_list += f"Size: {file_size_mb} MB\n"
             
             os.remove(file_path)  # Delete the file
         download_speed = round(file_size_mb / download_time, 2)  # Calculate download speed in MB/s
 
-        bot.reply_to(message, f"Download completed in {download_time} seconds")
-        bot.reply_to(message, f"File size: {file_list} MB")
-        bot.reply_to(message, f"Download speed: {download_speed} MB/s")
-        bot.reply_to(message, f"Downloaded file: {file}")
+        bot.reply_to(message, f"Downloaded file: {file}.\n{file_list}. \nDownload completed in {download_time} seconds.\nDownload speed: {download_speed} MB/s.\n")
     except Exception as e:
         bot.reply_to(message, f"Could not download: {e}")
