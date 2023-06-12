@@ -33,7 +33,7 @@ def handle_download(message):
         bot.reply_to(message, "Downloading...")
         
         request = m.get_public_url_info(link)
-        file_size_int = int(request['size']) / (1024 * 1024)
+        file_size_int = round(int(request['size']) / (1024 * 1024), 2)
         file_size = f"{file_size_int} MBs"
         file_name = request['name']
         
