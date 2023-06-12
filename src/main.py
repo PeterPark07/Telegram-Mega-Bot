@@ -31,6 +31,13 @@ def handle_download(message):
     link = message.text
     try:
         bot.reply_to(message, "Downloading...")
+        
+        request = m.get_public_url_info(link)
+        file_size_int = int(request['size']) / (1024 * 1024)
+        file_size = f"{file_size_int} MBs"
+        file_name = request['name']
+        
+        bot.reply_to(message, f"Download info:\n{file_name}\nSize : {file_size}")
         os.chdir(download_path)
         start_time = time.time()  # Capture start time
 
@@ -39,22 +46,8 @@ def handle_download(message):
 
         end_time = time.time()  # Capture end time
         download_time = round(end_time - start_time, 2)  # Calculate download time
-        
-        files = os.listdir(download_path)
-        file_sizes = []
-        for file in files:
-            file_path = os.path.join(download_path, file)
-            file_size = os.path.getsize(file_path)
-            file_sizes.append((file_path, file_size))
-        file_list  = ''
-        for file_path, file_size in file_sizes:
-            file_size_mb = round(file_size / (1024 * 1024), 2)
-            # Send file path and size to the user
-            file_list += f"Size: {file_size_mb} MB\n"
-            
-            os.remove(file_path)  # Delete the file
-        download_speed = round(file_size_mb / download_time, 2)  # Calculate download speed in MB/s
+        download_speed = round(file_size_int / download_time, 2)  # Calculate download speed in MB/s
 
-        bot.reply_to(message, f"Downloaded file: {file}.\n{file_list}. \nDownload completed in {download_time} seconds.\nDownload speed: {download_speed} MB/s.\n")
+        bot.reply_to(message, f"File Downloaded.\nTime taken : {download_time} seconds.\nDownload speed: {download_speed} MB/s.\n")
     except Exception as e:
         bot.reply_to(message, f"Could not download: {e}")
