@@ -1,5 +1,5 @@
 from mega import Mega
-
+import os
 email = os.getenv('email')
 password = os.getenv('pass')
 mega = Mega()
