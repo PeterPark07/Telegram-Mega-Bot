@@ -6,6 +6,9 @@ from helper.mega_acc import m
 
 app = Flask(__name__)
 bot = telebot.TeleBot(os.getenv('mega_bot'), threaded=False)
+download_path = './mega'  # Specify the download directory
+# Create the download directory if it doesn't exist
+os.makedirs(download_path, exist_ok=True)
 
 # Bot route to handle incoming messages
 @app.route('/', methods=['POST'])
@@ -28,20 +31,32 @@ def handle_download(message):
     link = message.text
     try:
         bot.reply_to(message, "Downloading...")
+        os.chdir(download_path)
         start_time = time.time()  # Capture start time
 
         file = m.download_url(link)
+        os.chdir('..')
 
         end_time = time.time()  # Capture end time
         download_time = round(end_time - start_time, 2)  # Calculate download time
-
-        file_size = m.get_size(file)  # Get file size in bytes
-        file_size_mb = round(file_size / (1024 * 1024), 2)  # Convert file size to MB
-
+        
+        files = os.listdir(download_path)
+        file_sizes = []
+        for file in files:
+            file_path = os.path.join(download_path, file)
+            file_size = os.path.getsize(file_path)
+            file_sizes.append((file_path, file_size))
+        file_list  = ''
+        for file_path, file_size in file_sizes:
+            file_size_mb = round(file_size / (1024 * 1024), 2)
+            # Send file path and size to the user
+            file_list += f"File: {file_path}, Size: {file_size_mb} MB\n"
+            
+            os.remove(file_path)  # Delete the file
         download_speed = round(file_size_mb / download_time, 2)  # Calculate download speed in MB/s
 
         bot.reply_to(message, f"Download completed in {download_time} seconds")
-        bot.reply_to(message, f"File size: {file_size_mb} MB")
+        bot.reply_to(message, f"File size: {file_list} MB")
         bot.reply_to(message, f"Download speed: {download_speed} MB/s")
         bot.reply_to(message, f"Downloaded file: {file}")
     except Exception as e:
